@@ -1,0 +1,888 @@
+-- ═══════════════════════════════════════════════════════
+--   ONYX HUB - 22 scripts + Popup de KEY + Badge PAGO
+-- ═══════════════════════════════════════════════════════
+
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+if CoreGui:FindFirstChild("OnyxHub") then
+    CoreGui.OnyxHub:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "OnyxHub"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = CoreGui
+
+-- ═══════════ PALETA ═══════════
+local C = {
+    Bg         = Color3.fromRGB(18, 12, 25),
+    TopBar     = Color3.fromRGB(22, 16, 30),
+    Sidebar    = Color3.fromRGB(24, 18, 34),
+    Card       = Color3.fromRGB(32, 24, 46),
+    CardHover  = Color3.fromRGB(44, 32, 62),
+    InputBg    = Color3.fromRGB(38, 28, 54),
+    Purple     = Color3.fromRGB(155, 80, 255),
+    PurpleHover= Color3.fromRGB(185, 115, 255),
+    Green      = Color3.fromRGB(70, 220, 160),
+    Red        = Color3.fromRGB(255, 70, 130),
+    Yellow     = Color3.fromRGB(255, 210, 90),
+    Pink       = Color3.fromRGB(255, 80, 180),
+    Gold       = Color3.fromRGB(255, 200, 40),
+    Text       = Color3.fromRGB(240, 235, 250),
+    TextDim    = Color3.fromRGB(150, 135, 175),
+    Border     = Color3.fromRGB(50, 38, 68),
+}
+
+local function addCorner(o, r)
+    local c = Instance.new("UICorner", o); c.CornerRadius = UDim.new(0, r or 8); return c
+end
+local function addStroke(o, color, t, tr)
+    local s = Instance.new("UIStroke", o)
+    s.Color = color; s.Thickness = t or 1; s.Transparency = tr or 0
+    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    return s
+end
+
+-- ═══════════ BOTÃO FLUTUANTE ═══════════
+local Toggle = Instance.new("TextButton")
+Toggle.Size = UDim2.new(0, 62, 0, 62)
+Toggle.Position = UDim2.new(0, 20, 0.5, -31)
+Toggle.BackgroundColor3 = Color3.fromRGB(8, 3, 16)
+Toggle.Text = ""
+Toggle.AutoButtonColor = false
+Toggle.Parent = ScreenGui
+addCorner(Toggle, 15)
+
+local ToggleGrad = Instance.new("UIGradient", Toggle)
+ToggleGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(12, 4, 22)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(45, 15, 85)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(12, 4, 22)),
+})
+ToggleGrad.Rotation = 90
+
+local ToggleStroke = addStroke(Toggle, Color3.fromRGB(150, 80, 255), 2.5)
+
+local GlowOuter = Instance.new("UIStroke", Toggle)
+GlowOuter.Color = Color3.fromRGB(170, 90, 255)
+GlowOuter.Thickness = 8
+GlowOuter.Transparency = 0.7
+
+task.spawn(function()
+    while Toggle.Parent do
+        TweenService:Create(GlowOuter, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Transparency = 0.9}):Play()
+        TweenService:Create(ToggleStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Thickness = 3}):Play()
+        task.wait(1.5)
+        TweenService:Create(GlowOuter, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Transparency = 0.55}):Play()
+        TweenService:Create(ToggleStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Thickness = 2.5}):Play()
+        task.wait(1.5)
+    end
+end)
+
+-- ═══════════ LOGO O ═══════════
+local FContainer = Instance.new("Frame")
+FContainer.Size = UDim2.new(0, 42, 0, 42)
+FContainer.Position = UDim2.new(0.5, -21, 0.5, -21)
+FContainer.BackgroundTransparency = 1
+FContainer.Rotation = -8
+FContainer.Parent = Toggle
+
+local ShadowF = Instance.new("TextLabel")
+ShadowF.Size = UDim2.new(1, 0, 1, 0)
+ShadowF.Position = UDim2.new(0, 2, 0, 2)
+ShadowF.BackgroundTransparency = 1
+ShadowF.Text = "O"
+ShadowF.TextColor3 = Color3.fromRGB(45, 10, 90)
+ShadowF.Font = Enum.Font.GothamBlack
+ShadowF.TextSize = 42
+ShadowF.ZIndex = 1
+ShadowF.Parent = FContainer
+
+local GlowF = Instance.new("TextLabel")
+GlowF.Size = UDim2.new(1, 0, 1, 0)
+GlowF.BackgroundTransparency = 1
+GlowF.Text = "O"
+GlowF.TextColor3 = Color3.fromRGB(180, 100, 255)
+GlowF.Font = Enum.Font.GothamBlack
+GlowF.TextSize = 42
+GlowF.TextTransparency = 0.55
+GlowF.ZIndex = 2
+GlowF.Parent = FContainer
+
+local MainF = Instance.new("TextLabel")
+MainF.Size = UDim2.new(1, 0, 1, 0)
+MainF.BackgroundTransparency = 1
+MainF.Text = "O"
+MainF.TextColor3 = Color3.fromRGB(200, 140, 255)
+MainF.Font = Enum.Font.GothamBlack
+MainF.TextSize = 42
+MainF.ZIndex = 5
+MainF.Parent = FContainer
+
+local MainGrad = Instance.new("UIGradient", MainF)
+MainGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0,    Color3.fromRGB(255, 245, 255)),
+    ColorSequenceKeypoint.new(0.2,  Color3.fromRGB(225, 180, 255)),
+    ColorSequenceKeypoint.new(0.5,  Color3.fromRGB(175, 95, 255)),
+    ColorSequenceKeypoint.new(0.8,  Color3.fromRGB(125, 55, 220)),
+    ColorSequenceKeypoint.new(1,    Color3.fromRGB(75, 20, 160)),
+})
+MainGrad.Rotation = 90
+
+local OutlineF = Instance.new("UIStroke", MainF)
+OutlineF.Color = Color3.fromRGB(190, 110, 255)
+OutlineF.Thickness = 1.5
+OutlineF.Transparency = 0.2
+
+local HaloF = Instance.new("UIStroke", MainF)
+HaloF.Color = Color3.fromRGB(165, 85, 250)
+HaloF.Thickness = 4
+HaloF.Transparency = 0.75
+
+task.spawn(function()
+    while FContainer.Parent do
+        TweenService:Create(HaloF, TweenInfo.new(1.3, Enum.EasingStyle.Sine), {Transparency = 0.95, Thickness = 3}):Play()
+        TweenService:Create(GlowF, TweenInfo.new(1.3, Enum.EasingStyle.Sine), {TextTransparency = 0.75}):Play()
+        task.wait(1.3)
+        TweenService:Create(HaloF, TweenInfo.new(1.3, Enum.EasingStyle.Sine), {Transparency = 0.6, Thickness = 5}):Play()
+        TweenService:Create(GlowF, TweenInfo.new(1.3, Enum.EasingStyle.Sine), {TextTransparency = 0.35}):Play()
+        task.wait(1.3)
+    end
+end)
+
+task.spawn(function()
+    local dir = 1
+    while FContainer.Parent do
+        local alvo = -8 + (dir * 3)
+        TweenService:Create(FContainer, TweenInfo.new(2.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Rotation = alvo}):Play()
+        task.wait(2.5)
+        dir = -dir
+    end
+end)
+
+-- Arrasta
+local drag, dragIn, dragStart, startPos
+Toggle.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        drag = true; dragStart = i.Position; startPos = Toggle.Position
+        i.Changed:Connect(function() if i.UserInputState == Enum.UserInputState.End then drag = false end end)
+    end
+end)
+Toggle.InputChanged:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch then dragIn = i end
+end)
+UserInputService.InputChanged:Connect(function(i)
+    if i == dragIn and drag then
+        local d = i.Position - dragStart
+        Toggle.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+    end
+end)
+
+-- ═══════════ JANELA PRINCIPAL ═══════════
+local Main = Instance.new("Frame")
+Main.Size = UDim2.new(0, 640, 0, 420)
+Main.Position = UDim2.new(0.5, -320, 0.5, -210)
+Main.BackgroundColor3 = C.Bg
+Main.BorderSizePixel = 0
+Main.Visible = false
+Main.ClipsDescendants = true
+Main.Parent = ScreenGui
+addCorner(Main, 10)
+addStroke(Main, C.Purple, 1.5, 0.4)
+
+local TopBar = Instance.new("Frame")
+TopBar.Size = UDim2.new(1, 0, 0, 45)
+TopBar.BackgroundColor3 = C.TopBar
+TopBar.BorderSizePixel = 0
+TopBar.Parent = Main
+addCorner(TopBar, 10)
+local TopBarFix = Instance.new("Frame")
+TopBarFix.Size = UDim2.new(1, 0, 0, 12)
+TopBarFix.Position = UDim2.new(0, 0, 1, -12)
+TopBarFix.BackgroundColor3 = C.TopBar
+TopBarFix.BorderSizePixel = 0
+TopBarFix.Parent = TopBar
+
+local MiniFBtn = Instance.new("Frame")
+MiniFBtn.Size = UDim2.new(0, 30, 0, 30)
+MiniFBtn.Position = UDim2.new(0, 12, 0.5, -15)
+MiniFBtn.BackgroundColor3 = Color3.fromRGB(10, 3, 22)
+MiniFBtn.BorderSizePixel = 0
+MiniFBtn.Parent = TopBar
+addCorner(MiniFBtn, 8)
+addStroke(MiniFBtn, Color3.fromRGB(150, 80, 255), 1.5)
+
+local MiniF = Instance.new("TextLabel")
+MiniF.Size = UDim2.new(1, 0, 1, 0)
+MiniF.BackgroundTransparency = 1
+MiniF.Text = "O"
+MiniF.TextColor3 = Color3.fromRGB(200, 140, 255)
+MiniF.Font = Enum.Font.GothamBlack
+MiniF.TextSize = 20
+MiniF.Parent = MiniFBtn
+
+local MiniFGrad = Instance.new("UIGradient", MiniF)
+MiniFGrad.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(240, 220, 255)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(170, 95, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(80, 25, 170)),
+})
+MiniFGrad.Rotation = 90
+
+local MiniFGlow = Instance.new("UIStroke", MiniF)
+MiniFGlow.Color = Color3.fromRGB(180, 100, 255)
+MiniFGlow.Thickness = 1
+MiniFGlow.Transparency = 0.4
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(0, 300, 0, 20)
+Title.Position = UDim2.new(0, 52, 0, 6)
+Title.BackgroundTransparency = 1
+Title.Text = "Onyx Hub"
+Title.TextColor3 = C.Purple
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = TopBar
+
+local Sub = Instance.new("TextLabel")
+Sub.Size = UDim2.new(0, 300, 0, 14)
+Sub.Position = UDim2.new(0, 52, 0, 24)
+Sub.BackgroundTransparency = 1
+Sub.Text = "22 scripts carregados 🇧🇷"
+Sub.TextColor3 = C.TextDim
+Sub.Font = Enum.Font.Gotham
+Sub.TextSize = 10
+Sub.TextXAlignment = Enum.TextXAlignment.Left
+Sub.Parent = TopBar
+
+local MinBtn = Instance.new("TextButton")
+MinBtn.Size = UDim2.new(0, 30, 0, 30)
+MinBtn.Position = UDim2.new(1, -75, 0.5, -15)
+MinBtn.BackgroundColor3 = Color3.fromRGB(48, 38, 62)
+MinBtn.Text = "−"
+MinBtn.TextColor3 = C.Text
+MinBtn.Font = Enum.Font.GothamBold
+MinBtn.TextSize = 18
+MinBtn.AutoButtonColor = false
+MinBtn.Parent = TopBar
+addCorner(MinBtn, 6)
+MinBtn.MouseButton1Click:Connect(function() Main.Visible = false end)
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -40, 0.5, -15)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(48, 38, 62)
+CloseBtn.Text = "✕"
+CloseBtn.TextColor3 = C.Text
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextSize = 14
+CloseBtn.AutoButtonColor = false
+CloseBtn.Parent = TopBar
+addCorner(CloseBtn, 6)
+CloseBtn.MouseButton1Click:Connect(function() Main.Visible = false end)
+
+local wDrag, wDragIn, wStart, wStartPos
+TopBar.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+        wDrag = true; wStart = i.Position; wStartPos = Main.Position
+        i.Changed:Connect(function() if i.UserInputState == Enum.UserInputState.End then wDrag = false end end)
+    end
+end)
+TopBar.InputChanged:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch then wDragIn = i end
+end)
+UserInputService.InputChanged:Connect(function(i)
+    if i == wDragIn and wDrag then
+        local d = i.Position - wStart
+        Main.Position = UDim2.new(wStartPos.X.Scale, wStartPos.X.Offset + d.X, wStartPos.Y.Scale, wStartPos.Y.Offset + d.Y)
+    end
+end)
+
+-- Sidebar
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 165, 1, -45)
+Sidebar.Position = UDim2.new(0, 0, 0, 45)
+Sidebar.BackgroundColor3 = C.Sidebar
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = Main
+
+local SidePad = Instance.new("UIPadding", Sidebar)
+SidePad.PaddingTop = UDim.new(0, 8)
+SidePad.PaddingLeft = UDim.new(0, 8)
+SidePad.PaddingRight = UDim.new(0, 8)
+
+local SideLayout = Instance.new("UIListLayout", Sidebar)
+SideLayout.Padding = UDim.new(0, 4)
+SideLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+local function SideItem(texto, ativo, badge)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, 0, 0, 34)
+    b.BackgroundColor3 = ativo and C.Purple or Color3.fromRGB(30, 24, 42)
+    b.Text = ""
+    b.AutoButtonColor = false
+    b.Parent = Sidebar
+    addCorner(b, 6)
+
+    local dot = Instance.new("Frame")
+    dot.Size = UDim2.new(0, 6, 0, 6)
+    dot.Position = UDim2.new(0, 10, 0.5, -3)
+    dot.BackgroundColor3 = ativo and Color3.fromRGB(255, 255, 255) or C.TextDim
+    dot.BorderSizePixel = 0
+    dot.Parent = b
+    addCorner(dot, 3)
+
+    local l = Instance.new("TextLabel")
+    l.Size = UDim2.new(1, -35, 1, 0)
+    l.Position = UDim2.new(0, 25, 0, 0)
+    l.BackgroundTransparency = 1
+    l.Text = texto
+    l.TextColor3 = ativo and Color3.fromRGB(255, 255, 255) or C.Text
+    l.Font = Enum.Font.GothamMedium
+    l.TextSize = 12
+    l.TextXAlignment = Enum.TextXAlignment.Left
+    l.Parent = b
+
+    if badge then
+        local bg = Instance.new("TextLabel")
+        bg.Size = UDim2.new(0, 18, 0, 18)
+        bg.Position = UDim2.new(1, -22, 0.5, -9)
+        bg.BackgroundColor3 = C.Red
+        bg.Text = tostring(badge)
+        bg.TextColor3 = Color3.fromRGB(255, 255, 255)
+        bg.Font = Enum.Font.GothamBold
+        bg.TextSize = 10
+        bg.Parent = b
+        addCorner(bg, 9)
+    end
+
+    if not ativo then
+        b.MouseEnter:Connect(function()
+            TweenService:Create(b, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(42, 32, 58)}):Play()
+        end)
+        b.MouseLeave:Connect(function()
+            TweenService:Create(b, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(30, 24, 42)}):Play()
+        end)
+    end
+    return b
+end
+
+SideItem("steal an egg", true)
+SideItem("favorite", false)
+SideItem("info/all script", false)
+SideItem("new script", false, 1)
+
+-- Content
+local Content = Instance.new("Frame")
+Content.Size = UDim2.new(1, -165, 1, -45)
+Content.Position = UDim2.new(0, 165, 0, 45)
+Content.BackgroundTransparency = 1
+Content.Parent = Main
+
+local Header = Instance.new("TextLabel")
+Header.Size = UDim2.new(1, -20, 0, 22)
+Header.Position = UDim2.new(0, 12, 0, 8)
+Header.BackgroundTransparency = 1
+Header.Text = "STEAL AN EGG  --  0 SCRIPTS"
+Header.TextColor3 = C.TextDim
+Header.Font = Enum.Font.GothamBold
+Header.TextSize = 11
+Header.TextXAlignment = Enum.TextXAlignment.Left
+Header.Parent = Content
+
+local FiltFrame = Instance.new("Frame")
+FiltFrame.Size = UDim2.new(1, -20, 0, 30)
+FiltFrame.Position = UDim2.new(0, 12, 0, 34)
+FiltFrame.BackgroundTransparency = 1
+FiltFrame.Parent = Content
+
+local FiltLayout = Instance.new("UIListLayout", FiltFrame)
+FiltLayout.FillDirection = Enum.FillDirection.Horizontal
+FiltLayout.Padding = UDim.new(0, 6)
+FiltLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+local filtroAtual = "all"
+
+local function makeFilter(texto, valor, largura)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(0, largura, 1, 0)
+    b.BackgroundColor3 = C.Card
+    b.Text = texto
+    b.TextColor3 = C.Text
+    b.Font = Enum.Font.GothamBold
+    b.TextSize = 10
+    b.AutoButtonColor = false
+    b.Parent = FiltFrame
+    addCorner(b, 6)
+    return b
+end
+
+local btnAll = makeFilter("ALL", "all", 70)
+btnAll.BackgroundColor3 = C.Purple
+local btnKey = makeFilter("🔑 KEY", "key", 70)
+local btnNoKey = makeFilter("🔒 No Key ⭐ RECOMMENDED", "nokey", 145)
+
+local SearchBg = Instance.new("Frame")
+SearchBg.Size = UDim2.new(1, -20, 0, 32)
+SearchBg.Position = UDim2.new(0, 12, 0, 70)
+SearchBg.BackgroundColor3 = C.InputBg
+SearchBg.BorderSizePixel = 0
+SearchBg.Parent = Content
+addCorner(SearchBg, 6)
+addStroke(SearchBg, C.Border, 1)
+
+local SearchIcon = Instance.new("TextLabel")
+SearchIcon.Size = UDim2.new(0, 24, 1, 0)
+SearchIcon.Position = UDim2.new(0, 6, 0, 0)
+SearchIcon.BackgroundTransparency = 1
+SearchIcon.Text = "🔍"
+SearchIcon.TextSize = 13
+SearchIcon.Parent = SearchBg
+
+local SearchBox = Instance.new("TextBox")
+SearchBox.Size = UDim2.new(1, -40, 1, 0)
+SearchBox.Position = UDim2.new(0, 32, 0, 0)
+SearchBox.BackgroundTransparency = 1
+SearchBox.Text = ""
+SearchBox.PlaceholderText = "Procurar script..."
+SearchBox.PlaceholderColor3 = C.TextDim
+SearchBox.TextColor3 = C.Text
+SearchBox.Font = Enum.Font.Gotham
+SearchBox.TextSize = 12
+SearchBox.TextXAlignment = Enum.TextXAlignment.Left
+SearchBox.ClearTextOnFocus = false
+SearchBox.Parent = SearchBg
+
+local List = Instance.new("ScrollingFrame")
+List.Size = UDim2.new(1, -20, 1, -115)
+List.Position = UDim2.new(0, 12, 0, 110)
+List.BackgroundTransparency = 1
+List.BorderSizePixel = 0
+List.ScrollBarThickness = 4
+List.ScrollBarImageColor3 = C.Purple
+List.ScrollBarImageTransparency = 0.3
+List.CanvasSize = UDim2.new(0, 0, 0, 0)
+List.AutomaticCanvasSize = Enum.AutomaticSize.Y
+List.Parent = Content
+
+local ListLayout = Instance.new("UIListLayout", List)
+ListLayout.Padding = UDim.new(0, 6)
+ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+local ListPad = Instance.new("UIPadding", List)
+ListPad.PaddingRight = UDim.new(0, 4)
+ListPad.PaddingBottom = UDim.new(0, 6)
+
+-- Notify
+local function Notify(texto, cor, duracao)
+    duracao = duracao or 2.5
+    cor = cor or C.Green
+    local n = Instance.new("TextLabel")
+    n.Size = UDim2.new(0, 320, 0, 38)
+    n.Position = UDim2.new(0.5, -160, 1, -30)
+    n.BackgroundColor3 = C.TopBar
+    n.TextColor3 = cor
+    n.Font = Enum.Font.GothamBold
+    n.TextSize = 12
+    n.Text = texto
+    n.TextTransparency = 1
+    n.BackgroundTransparency = 1
+    n.Parent = ScreenGui
+    addCorner(n, 8)
+    local s = addStroke(n, cor, 1.5, 1)
+
+    TweenService:Create(n, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0.5, -160, 1, -60),
+        BackgroundTransparency = 0,
+        TextTransparency = 0
+    }):Play()
+    TweenService:Create(s, TweenInfo.new(0.3), {Transparency = 0}):Play()
+
+    task.delay(duracao, function()
+        TweenService:Create(n, TweenInfo.new(0.25), {
+            Position = UDim2.new(0.5, -160, 1, -40),
+            BackgroundTransparency = 1,
+            TextTransparency = 1
+        }):Play()
+        TweenService:Create(s, TweenInfo.new(0.25), {Transparency = 1}):Play()
+        task.wait(0.3)
+        n:Destroy()
+    end)
+end
+
+-- ═══════════ POPUP DE KEY ═══════════
+local function PopupKey(nomeScript, key, corAcento)
+    local overlay = Instance.new("TextButton")
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    overlay.BackgroundTransparency = 1
+    overlay.Text = ""
+    overlay.AutoButtonColor = false
+    overlay.ZIndex = 100
+    overlay.Parent = ScreenGui
+
+    TweenService:Create(overlay, TweenInfo.new(0.25), {BackgroundTransparency = 0.5}):Play()
+
+    local popup = Instance.new("Frame")
+    popup.Size = UDim2.new(0, 380, 0, 200)
+    popup.Position = UDim2.new(0.5, -190, 0.5, -100)
+    popup.BackgroundColor3 = C.Bg
+    popup.BorderSizePixel = 0
+    popup.ZIndex = 101
+    popup.Parent = overlay
+    addCorner(popup, 12)
+    addStroke(popup, corAcento, 2, 0)
+
+    local titulo = Instance.new("TextLabel")
+    titulo.Size = UDim2.new(1, -40, 0, 30)
+    titulo.Position = UDim2.new(0, 20, 0, 15)
+    titulo.BackgroundTransparency = 1
+    titulo.Text = "🔒 " .. nomeScript
+    titulo.TextColor3 = corAcento
+    titulo.Font = Enum.Font.GothamBold
+    titulo.TextSize = 16
+    titulo.TextXAlignment = Enum.TextXAlignment.Left
+    titulo.ZIndex = 102
+    titulo.Parent = popup
+
+    local subt = Instance.new("TextLabel")
+    subt.Size = UDim2.new(1, -40, 0, 18)
+    subt.Position = UDim2.new(0, 20, 0, 45)
+    subt.BackgroundTransparency = 1
+    subt.Text = "Use esta key quando o script pedir:"
+    subt.TextColor3 = C.TextDim
+    subt.Font = Enum.Font.Gotham
+    subt.TextSize = 11
+    subt.TextXAlignment = Enum.TextXAlignment.Left
+    subt.ZIndex = 102
+    subt.Parent = popup
+
+    local keyBox = Instance.new("Frame")
+    keyBox.Size = UDim2.new(1, -40, 0, 50)
+    keyBox.Position = UDim2.new(0, 20, 0, 75)
+    keyBox.BackgroundColor3 = C.InputBg
+    keyBox.BorderSizePixel = 0
+    keyBox.ZIndex = 102
+    keyBox.Parent = popup
+    addCorner(keyBox, 8)
+    addStroke(keyBox, corAcento, 1.5, 0.3)
+
+    local keyLabel = Instance.new("TextLabel")
+    keyLabel.Size = UDim2.new(1, -20, 1, 0)
+    keyLabel.Position = UDim2.new(0, 10, 0, 0)
+    keyLabel.BackgroundTransparency = 1
+    keyLabel.Text = key
+    keyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    keyLabel.Font = Enum.Font.GothamBold
+    keyLabel.TextSize = 16
+    keyLabel.TextXAlignment = Enum.TextXAlignment.Left
+    keyLabel.TextWrapped = true
+    keyLabel.ZIndex = 103
+    keyLabel.Parent = keyBox
+
+    local copyBtn = Instance.new("TextButton")
+    copyBtn.Size = UDim2.new(0, 90, 0, 34)
+    copyBtn.Position = UDim2.new(0, 20, 1, -50)
+    copyBtn.BackgroundColor3 = corAcento
+    copyBtn.Text = "📋 COPIAR"
+    copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    copyBtn.Font = Enum.Font.GothamBold
+    copyBtn.TextSize = 11
+    copyBtn.AutoButtonColor = false
+    copyBtn.ZIndex = 103
+    copyBtn.Parent = popup
+    addCorner(copyBtn, 6)
+
+    local closeBtn = Instance.new("TextButton")
+    closeBtn.Size = UDim2.new(0, 90, 0, 34)
+    closeBtn.Position = UDim2.new(1, -110, 1, -50)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(48, 38, 62)
+    closeBtn.Text = "FECHAR"
+    closeBtn.TextColor3 = C.Text
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 11
+    closeBtn.AutoButtonColor = false
+    closeBtn.ZIndex = 103
+    closeBtn.Parent = popup
+    addCorner(closeBtn, 6)
+
+    local function Fechar()
+        TweenService:Create(overlay, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
+        TweenService:Create(popup, TweenInfo.new(0.2), {
+            Size = UDim2.new(0, 300, 0, 150),
+            Position = UDim2.new(0.5, -150, 0.5, -75)
+        }):Play()
+        task.wait(0.2)
+        overlay:Destroy()
+    end
+
+    closeBtn.MouseButton1Click:Connect(Fechar)
+    overlay.MouseButton1Click:Connect(Fechar)
+
+    copyBtn.MouseButton1Click:Connect(function()
+        if setclipboard then
+            setclipboard(key)
+            copyBtn.Text = "✅ COPIADO!"
+            copyBtn.BackgroundColor3 = C.Green
+            Notify("📋 Key copiada!", C.Green, 1.5)
+            task.wait(1.5)
+            copyBtn.Text = "📋 COPIAR"
+            copyBtn.BackgroundColor3 = corAcento
+        else
+            Notify("⚠️ Seu executor não suporta clipboard", C.Yellow)
+        end
+    end)
+
+    popup.Size = UDim2.new(0, 300, 0, 150)
+    popup.Position = UDim2.new(0.5, -150, 0.5, -75)
+    TweenService:Create(popup, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 380, 0, 200),
+        Position = UDim2.new(0.5, -190, 0.5, -100)
+    }):Play()
+end
+
+-- ═══════════ CARDS ═══════════
+local cards = {}
+
+local function CreateCard(nome, url, noKey, recomendado, keyCustom, pago)
+    local Card = Instance.new("Frame")
+    Card.Size = UDim2.new(1, -6, 0, 42)
+    Card.BackgroundColor3 = C.Card
+    Card.BorderSizePixel = 0
+    Card.Parent = List
+    addCorner(Card, 6)
+    addStroke(Card, C.Border, 1)
+
+    local Nome = Instance.new("TextLabel")
+    Nome.Size = UDim2.new(0.42, 0, 1, 0)
+    Nome.Position = UDim2.new(0, 12, 0, 0)
+    Nome.BackgroundTransparency = 1
+    Nome.Text = nome
+    Nome.TextColor3 = C.Text
+    Nome.Font = Enum.Font.GothamBold
+    Nome.TextSize = 12
+    Nome.TextXAlignment = Enum.TextXAlignment.Left
+    Nome.Parent = Card
+
+    local Star = Instance.new("TextButton")
+    Star.Size = UDim2.new(0, 22, 0, 22)
+    Star.Position = UDim2.new(1, -280, 0.5, -11)
+    Star.BackgroundTransparency = 1
+    Star.Text = "☆"
+    Star.TextColor3 = C.TextDim
+    Star.Font = Enum.Font.GothamBold
+    Star.TextSize = 18
+    Star.AutoButtonColor = false
+    Star.Parent = Card
+
+    local favAtivo = false
+    Star.MouseButton1Click:Connect(function()
+        favAtivo = not favAtivo
+        Star.Text = favAtivo and "★" or "☆"
+        Star.TextColor3 = favAtivo and C.Yellow or C.TextDim
+    end)
+
+    local badgeX = -255
+
+    if pago then
+        local rb = Instance.new("TextLabel")
+        rb.Size = UDim2.new(0, 80, 0, 20)
+        rb.Position = UDim2.new(1, badgeX, 0.5, -10)
+        rb.BackgroundColor3 = C.Gold
+        rb.Text = "💰 PAGO $12"
+        rb.TextColor3 = Color3.fromRGB(30, 20, 0)
+        rb.Font = Enum.Font.GothamBold
+        rb.TextSize = 9
+        rb.Parent = Card
+        addCorner(rb, 4)
+    elseif recomendado then
+        local rb = Instance.new("TextLabel")
+        rb.Size = UDim2.new(0, 100, 0, 20)
+        rb.Position = UDim2.new(1, badgeX - 5, 0.5, -10)
+        rb.BackgroundColor3 = C.Yellow
+        rb.Text = "RECOMMENDED"
+        rb.TextColor3 = Color3.fromRGB(20, 20, 20)
+        rb.Font = Enum.Font.GothamBold
+        rb.TextSize = 9
+        rb.Parent = Card
+        addCorner(rb, 4)
+    end
+
+    local kb = Instance.new("TextLabel")
+    kb.Size = UDim2.new(0, 62, 0, 20)
+    kb.Position = UDim2.new(1, -120, 0.5, -10)
+    if keyCustom then
+        kb.BackgroundColor3 = C.Pink
+        kb.Text = "🔒 PRIVATE"
+        kb.Size = UDim2.new(0, 78, 0, 20)
+        kb.Position = UDim2.new(1, -136, 0.5, -10)
+    else
+        kb.BackgroundColor3 = noKey and C.Green or C.Red
+        kb.Text = noKey and "No Key" or "Key"
+    end
+    kb.TextColor3 = Color3.fromRGB(255, 255, 255)
+    kb.Font = Enum.Font.GothamBold
+    kb.TextSize = 10
+    kb.Parent = Card
+    addCorner(kb, 4)
+
+    local Run = Instance.new("TextButton")
+    Run.Size = UDim2.new(0, 50, 0, 26)
+    Run.Position = UDim2.new(1, -55, 0.5, -13)
+    Run.BackgroundColor3 = C.Purple
+    Run.Text = "run"
+    Run.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Run.Font = Enum.Font.GothamBold
+    Run.TextSize = 11
+    Run.AutoButtonColor = false
+    Run.Parent = Card
+    addCorner(Run, 5)
+
+    Card.MouseEnter:Connect(function()
+        TweenService:Create(Card, TweenInfo.new(0.15), {BackgroundColor3 = C.CardHover}):Play()
+    end)
+    Card.MouseLeave:Connect(function()
+        TweenService:Create(Card, TweenInfo.new(0.15), {BackgroundColor3 = C.Card}):Play()
+    end)
+    Run.MouseEnter:Connect(function()
+        TweenService:Create(Run, TweenInfo.new(0.15), {BackgroundColor3 = C.PurpleHover}):Play()
+    end)
+    Run.MouseLeave:Connect(function()
+        TweenService:Create(Run, TweenInfo.new(0.15), {BackgroundColor3 = C.Purple}):Play()
+    end)
+
+    Run.MouseButton1Click:Connect(function()
+        if keyCustom then
+            PopupKey(nome, keyCustom, C.Pink)
+            if url == "COLE_A_URL_AQUI" or url == "" then
+                return
+            end
+            task.wait(0.3)
+        elseif not noKey then
+            Notify("🔑 " .. nome .. " precisa de KEY!", C.Yellow)
+            task.wait(0.4)
+        end
+
+        Notify("⏳ Carregando " .. nome .. "...", C.Purple)
+
+        task.spawn(function()
+            local ok, err = pcall(function()
+                loadstring(game:HttpGet(url))()
+            end)
+            if ok then
+                Notify("✅ " .. nome .. " carregado!", C.Green)
+            else
+                Notify("❌ Erro: " .. tostring(err):sub(1, 40), C.Red)
+            end
+        end)
+    end)
+
+    table.insert(cards, {frame = Card, nome = nome, noKey = noKey, recomendado = recomendado})
+end
+
+-- ═══════════════════════════════════════════════════════
+--              REGISTRO DOS 22 SCRIPTS
+-- ═══════════════════════════════════════════════════════
+
+-- ORIGINAIS
+CreateCard("SENA HUB", "https://senahub.xyz/raw/loader", true, true)
+CreateCard("MIRANDA HUB", "https://api.luarmor.net/files/v4/loaders/6b07a458832f08b2314f706f14723212.lua", true, true)
+CreateCard("FYY HUB", "https://raw.githubusercontent.com/napun87/stealanegg/refs/heads/main/fly.lua", true, true)
+CreateCard("LENNON FARM V2", "https://raw.githubusercontent.com/lennonxscripts/lennonfarmv2/refs/heads/main/stealanegg", true, false)
+CreateCard("SERVE PV", "https://raw.githubusercontent.com/desyble/serverprivate/refs/heads/main/loader.luau", true, false)
+
+-- PRIMEIRA LEVA
+CreateCard("ASTRAL HUB", "https://api.polsec.sh/loader/57d088befe906a8e/76f9bde1349c5eb9", true, true)
+CreateCard("TICTAC HUB", "https://raw.githubusercontent.com/TITANIC-HUB/StealAnEgg/main/Loader.lua", false, false)
+CreateCard("CYRUS HUB", "https://raw.githubusercontent.com/CyrusOffc/scriptcyrus/refs/heads/main/loader", true, true)
+CreateCard("LSS HUB", "https://raw.githubusercontent.com/LSSOPS/OpenSource/refs/heads/main/LSSHub_Steal_An_Hub.lua", true, true)
+CreateCard("LUMIN HUB", "http://luminon.top/loader.lua", false, false)
+CreateCard("NIGHT HUB", "https://pastefy.app/J29hE5fR/raw", true, false)
+CreateCard("TRIPS HUB", "https://raw.githubusercontent.com/TripNation/Trips-Hub/main/games/steal_an_egg.lua", true, true)
+CreateCard("MIRACLE HUB", "https://raw.githubusercontent.com/miracleverytime/miraclehub-shared/main/loader.lua", true, true)
+CreateCard("VORTEX X ATLUQION", "https://raw.githubusercontent.com/Israel-Vortex/vortex-x-scripts/refs/heads/main/Official-Vortex-Software/Dev-Project/StealAnEgg.lua", true, true)
+
+-- SEGUNDA LEVA
+CreateCard("SEISEIN HUB", "https://raw.githubusercontent.com/Mentos4/roblox/refs/heads/main/Script/Steal%20an%20Egg", true, false)
+CreateCard("OCT HUB", "https://raw.githubusercontent.com/Aerlro/OTC/refs/heads/main/Steal%20an%20Egg/main.lua", true, false)
+CreateCard("PULLSEGG", "https://raw.githubusercontent.com/PulseZax/Loader/refs/heads/main/.lua", true, false, nil, true)
+CreateCard("LIMBO HUB", "https://limbohub.my.id/loader.lua", true, true)
+
+-- SCRIPT PRIVADO
+CreateCard("VANTABLACK HUB", "https://raw.githubusercontent.com/tranduykhanh08428-web/VantablackHub/refs/heads/main/Stealanegg.lua.txt", false, true, "estrela1010")
+
+-- TERCEIRA LEVA
+CreateCard("CHILI HUB", "https://raw.githubusercontent.com/tienkhanh1/spicy/main/Chilli.lua", true, true)
+CreateCard("ON HUB", "https://raw.githubusercontent.com/davizin713/ONhub/refs/heads/main/script.lua", false, true, "Free-772f8065-2062-44ce-aa57-a5ea835a1210")
+CreateCard("CLOVER HUB", "https://raw.githubusercontent.com/Ryuun0x/Clover/main/main.lua", false, true, "CH-04570C2B-864D4C18-0A9ACCA9-1869EBF8")
+
+Header.Text = "STEAL AN EGG  --  " .. #cards .. " SCRIPTS"
+
+-- ═══════════ FILTRO + BUSCA ═══════════
+local function atualizarLista()
+    local busca = string.lower(SearchBox.Text)
+    for _, c in ipairs(cards) do
+        local mostraBusca = (busca == "") or string.find(string.lower(c.nome), busca)
+        local mostraFiltro = true
+        if filtroAtual == "key" and c.noKey then mostraFiltro = false end
+        if filtroAtual == "nokey" and not c.noKey then mostraFiltro = false end
+        c.frame.Visible = mostraBusca and mostraFiltro
+    end
+end
+
+SearchBox:GetPropertyChangedSignal("Text"):Connect(atualizarLista)
+
+local function setFiltro(valor, btnAtivo)
+    filtroAtual = valor
+    for _, b in ipairs({btnAll, btnKey, btnNoKey}) do
+        b.BackgroundColor3 = C.Card
+    end
+    btnAtivo.BackgroundColor3 = C.Purple
+    atualizarLista()
+end
+
+btnAll.MouseButton1Click:Connect(function() setFiltro("all", btnAll) end)
+btnKey.MouseButton1Click:Connect(function() setFiltro("key", btnKey) end)
+btnNoKey.MouseButton1Click:Connect(function() setFiltro("nokey", btnNoKey) end)
+
+-- ═══════════ ABRIR / FECHAR ═══════════
+local aberto = false
+local function Abrir()
+    Main.Visible = true
+    Main.Size = UDim2.new(0, 560, 0, 360)
+    Main.Position = UDim2.new(0.5, -280, 0.5, -180)
+    Main.BackgroundTransparency = 1
+    TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 640, 0, 420),
+        Position = UDim2.new(0.5, -320, 0.5, -210),
+        BackgroundTransparency = 0
+    }):Play()
+end
+local function Fechar()
+    TweenService:Create(Main, TweenInfo.new(0.2), {
+        Size = UDim2.new(0, 560, 0, 360),
+        Position = UDim2.new(0.5, -280, 0.5, -180),
+        BackgroundTransparency = 1
+    }):Play()
+    task.wait(0.2)
+    Main.Visible = false
+end
+
+Toggle.MouseButton1Click:Connect(function()
+    aberto = not aberto
+    if aberto then Abrir() else Fechar() end
+end)
+
+UserInputService.InputBegan:Connect(function(i, gp)
+    if gp then return end
+    if i.KeyCode == Enum.KeyCode.K then
+        aberto = not aberto
+        if aberto then Abrir() else Fechar() end
+    end
+end)
+
+Notify("✅ Onyx Hub carregado! 22 scripts. [K] abre/fecha", C.Green)
